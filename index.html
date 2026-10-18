@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07152f" />
+  <title>CricFAN — Cricket Scores</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="CricFAN home"><span class="brand-mark">C</span><span>Cric<span>FAN</span></span></a>
+    <div class="header-actions">
+      <span class="live-pill"><i></i> LIVE CENTRE</span>
+      <button id="addMatchTop" class="btn btn-primary">＋ Add match</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">THE GAME, IN EVERY MOMENT</p>
+        <h1>Every run.<br><span>Every moment.</span></h1>
+        <p class="hero-copy">International cricket scores, live updates and match results in one place.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="ball">C</div><span class="spark spark-one">✦</span><span class="spark spark-two">✧</span></div>
+    </section>
+
+    <nav class="category-tabs" aria-label="Match category">
+      <button class="category-tab active" data-category="INTERNATIONAL">INTERNATIONAL</button>
+      <button class="category-tab" data-category="TOURNAMENT">TOURNAMENT</button>
+      <button class="category-tab" data-category="NATIONAL">NATIONAL</button>
+    </nav>
+
+    <section class="toolbar">
+      <label class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Search team, match or series…" autocomplete="off" /><kbd>⌘ K</kbd></label>
+      <div class="toolbar-right"><span class="updated"><i></i><span id="updateStatus">Manual score mode</span></span><button id="addMatch" class="btn btn-outline">＋ Add match</button></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading"><div><p class="eyebrow">RIGHT NOW</p><h2><span class="live-dot"></span> Live matches</h2></div><span id="liveCount" class="count">0 MATCHES</span></div>
+      <div id="liveMatches" class="match-grid"></div>
+      <div id="liveEmpty" class="empty-state hidden"><span>◉</span><h3>No live matches found</h3><p>Try another search or add a match to start scoring.</p></div>
+    </section>
+
+    <section class="section-block results-section">
+      <div class="section-heading"><div><p class="eyebrow">RECENT ACTION</p><h2>Yesterday's results</h2></div><span id="resultCount" class="count">0 RESULTS</span></div>
+      <div id="yesterdayMatches" class="results-list"></div>
+      <div id="resultsEmpty" class="empty-state hidden"><span>◷</span><h3>No results found</h3><p>Completed matches will appear here.</p></div>
+    </section>
+
+    <footer><a class="brand footer-brand" href="#"><span class="brand-mark">C</span><span>Cric<span>FAN</span></span></a><span>Scores made for fans. <b>●</b> <span id="footerMode">Demo data</span></span></footer>
+  </main>
+
+  <dialog id="matchDialog" class="modal">
+    <form id="matchForm" method="dialog">
+      <div class="modal-heading"><div><p class="eyebrow">MATCH CENTRE</p><h2>Add a match</h2></div><button type="button" class="icon-btn" id="closeDialog" aria-label="Close">×</button></div>
+      <div class="form-grid">
+        <label>Category<select id="matchCategory"><option>INTERNATIONAL</option><option>TOURNAMENT</option><option>NATIONAL</option></select></label>
+        <label>Match status<select id="matchStatus"><option value="live">Live</option><option value="result">Completed / Result</option></select></label>
+        <label>Team A<input id="teamA" required placeholder="e.g. India" /></label>
+        <label>Team B<input id="teamB" required placeholder="e.g. Australia" /></label>
+        <label>Team A runs<input id="runsA" type="number" min="0" value="0" required /></label>
+        <label>Team A wickets<input id="wicketsA" type="number" min="0" max="10" value="0" required /></label>
+        <label>Team A overs<input id="oversA" placeholder="e.g. 18.4" value="0.0" required /></label>
+        <label>Team B runs<input id="runsB" type="number" min="0" value="0" required /></label>
+        <label>Team B wickets<input id="wicketsB" type="number" min="0" max="10" value="0" required /></label>
+        <label>Team B overs<input id="oversB" placeholder="e.g. 20.0" value="0.0" required /></label>
+        <label class="full">Series / venue<input id="series" placeholder="e.g. ODI Series · Ahmedabad" /></label>
+        <label class="full">Match note<input id="matchNote" placeholder="e.g. India need 24 runs from 12 balls" /></label>
+      </div>
+      <p class="form-note">Manual scoring is enabled. Use the scorecard controls after adding a live match.</p>
+      <div class="modal-actions"><button type="button" id="cancelDialog" class="btn btn-outline">Cancel</button><button type="submit" class="btn btn-primary">Add match</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="scoreDialog" class="modal score-modal">
+    <form id="scoreForm" method="dialog">
+      <div class="modal-heading"><div><p class="eyebrow">LIVE SCORING</p><h2 id="scoreTitle">Scorecard</h2></div><button type="button" class="icon-btn" id="closeScoreDialog" aria-label="Close">×</button></div>
+      <div id="scoreSummary" class="score-summary"></div>
+      <div class="score-tabs"><button type="button" class="score-tab active" data-pane="batting">Batting</button><button type="button" class="score-tab" data-pane="bowling">Bowling</button><button type="button" class="score-tab" data-pane="details">Match details</button></div>
+      <div id="battingPane" class="score-pane">
+        <div class="score-controls">
+          <label>On strike<select id="strikerSelect"></select></label><label>Non-striker<select id="nonStrikerSelect"></select></label>
+          <label>Current bowler<input id="bowlerName" placeholder="Bowler name" value="Bowler 1" /></label>
+        </div>
+        <p class="control-label">Add delivery</p>
+        <div class="run-buttons"><button type="button" data-runs="0">Dot</button><button type="button" data-runs="1">1</button><button type="button" data-runs="2">2</button><button type="button" data-runs="3">3</button><button type="button" data-runs="4" class="four">4</button><button type="button" data-runs="6" class="six">6</button><button type="button" id="wideBtn">Wide +1</button><button type="button" id="noBallBtn">No-ball +1</button><button type="button" id="wicketBtn" class="wicket">Wicket</button><button type="button" id="undoBtn" class="undo">↶ Undo</button></div>
+        <div class="scorecard-table-wrap"><table class="score-table"><thead><tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr></thead><tbody id="battingTable"></tbody></table></div>
+      </div>
+      <div id="bowlingPane" class="score-pane hidden"><div class="scorecard-table-wrap"><table class="score-table"><thead><tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECON</th></tr></thead><tbody id="bowlingTable"></tbody></table></div></div>
+      <div id="detailsPane" class="score-pane hidden"><div class="form-grid"><label>Batting team<select id="battingTeamSelect"></select></label><label>Innings<select id="inningsSelect"><option value="0">Team A innings</option><option value="1">Team B innings</option></select></label><label class="full">Match note<input id="editMatchNote" placeholder="Match situation" /></label></div><button type="button" id="saveDetails" class="btn btn-primary">Save details</button></div>
+      <div class="modal-actions"><button type="button" id="closeScoreBottom" class="btn btn-outline">Close scorecard</button></div>
+    </form>
+  </dialog>
+  <script src="index.js"></script>
+</body>
+</html>
